@@ -1,0 +1,165 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=8" >
+<title>已发货列表</title>
+<link rel="stylesheet" type="text/css" href="../../public/admin/Assets/css/reset.css"/>
+<link rel="stylesheet" type="text/css" href="../../public/admin/Assets/css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../../public/admin/Assets/css/thems.css">
+<script type="text/javascript" src="../../public/admin/Assets/js/jquery-1.8.3.min.js"></script>
+<link rel="stylesheet" type="text/css" href="../../public/admin/Assets/css/jquery.datetimepicker.css">
+<script type="text/javascript" src="../../public/admin/Assets/js/jquery.datetimepicker.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../../public/css/page.css">
+<script type="text/javascript" src="../../public/js/ajax.js"></script>
+<script type="text/javascript" src="../../public/js/jquery.page.js"></script>
+
+<script type="text/javascript">
+$(function(){
+	//自适应屏幕宽度
+	window.onresize=function(){ location=location }; 
+	
+	var main_h = $(window).height();
+	$('.hy_list').css('height',main_h-45+'px');
+	
+	var search_w = $(window).width()-40;
+	$('.search').css('width',search_w+'px');
+	//$('.list_hy').css('width',search_w+'px');
+	$('#cxdd').click(function(){
+      var cxsj=$('#cxsj').val();
+         var num=$("#Status").val(); 
+	     $("#formtj").submit();
+
+      
+     });
+});
+function delorder(id){
+      if (confirm("您确定要删除吗？")) {  
+            location.href ='../../admin/index/delorderinfo/id/'+id; 
+        }  
+        else {  
+           return
+        }  
+	  
+}
+function editorder(id){
+     $("#editid").val(id); 
+     $("#formtj1").submit();
+}
+</script>
+<!--框架高度设置-->
+<style>
+.page ul li{ float:left;   margin-right:10px;  height: 30px; line-height:30px; border:1px solid #DEDEDE; }
+.page .disabled { line-height:29px; }
+.page .active { line-height:29px;  color: #FFF; background: #3D89CB; }
+.r_foot_m .page{  border: none; padding-left:15px; padding-right:10px; }
+.zengjia{  height: 30px;width: 70px;text-align:center;border-radius:5px; line-height:30px; display:block; color: #FFF; background: #3D89CB; float:right; margin-right:10px; margin-top:6px; }
+.list_hy{ width: 97.5%; }
+.list_hy tr td {  white-space: nowrap;text-overflow: ellipsis;overflow: hidden; }
+#onclick{ background:#fb7c07; color:#fff; }
+#onclick a{color:#fff; }
+.Status{  height: 25px;width: 170px; }
+</style>
+</head>
+<body onLoad="Resize();">
+<div id="right_ctn">
+	<div class="right_m">
+		<!--会议列表-->
+        <div class="hy_list">
+        	<div class="box_t">
+            	<span class="name">已发货列表</span>
+                <!--当前位置-->
+                <div class="position">
+                	<a href=""><img src="../../public/admin/Assets/images/icon5.png" alt=""/></a>
+                    <a href="">首页</a>
+                    <span><img src="../../public/admin/Assets/images/icon3.png" alt=""/></span>
+                    <a href="">订单统计</a>
+                    <span><img src="../../public/admin/Assets/images/icon3.png" alt=""/></span>
+                    <a href="">已发货列表</a>
+                </div>
+                <!--当前位置-->
+            </div>
+            <!--查询-->
+            <div class="search">
+			<form action="../../admin/index/orderinfo" id="formtj" method="get">
+			<a href="javascript:;" style="margin-left:10px;margin-top:0px;" onclick="javascript:void(history.back())" class="btn">返回</a>
+			 <span style="margin-left:50px;">
+				  时间查询：
+				    <input name="search" id="starttime" readonly class="input_list" style="width: 125px;" type="text" value="" >
+				  --
+				    <input name="search" id="stoptime" readonly class="input_list" style="width: 125px;" type="text" value="" >
+				</span>
+				 <a href="javascript:;" style=" margin-left:20px; " onclick="SE.ShipDataList();" class="btn">查询</a>
+				 <a href="javascript:;" style=" margin-left:10px; " onclick="dataall();" class="btn">全部</a>
+				<a href="../../admin/index/addorder?cid={$id}" id="" class="zengjia">增加</a>
+			</form>
+            </div>
+            <!--查询-->
+            <div class="space_hx">&nbsp;</div>
+            <!--列表-->
+            <form action="../../admin/index/addorderinfo" id="formtj1" method="get">
+            <table cellpadding="0" cellspacing="0" class="list_hy" style="table-layout: fixed;width: 1200 px">
+              <tr>
+			     <td>序号</td>
+				 <td>订单号</td>
+				 <td>客户</td>
+				 <td>快递单号</td>
+				 <td>已交数量</td>
+				 <td>当时未交数量</td>
+				 <td>时间</td>
+				 <td>操作</td>
+              </tr>
+			  <tbody class="orderlist"> 
+              </tbody> 
+            </table>
+            <!--列表-->
+			 <input type="hidden" name="id" id="editid" value="{$id}" />
+            <!--右边底部-->
+            <div class="r_foot">
+            	<div class="r_foot_m">
+            	<span>
+                    <em  class="num"></em>
+                </span>
+                <!--分页-->
+                <span style="float:right; margin-top:8px;">
+					  <div class="PageCode">
+                           <div class="tcdPageCode"></div>
+                          <div class="totel"></div>
+                      </div>
+                	<!--<a href="" class="prev"><img src="../../public/admin/Assets/images/icon7.png" alt=""/></a>
+                    <a class="now">1</a>
+                    <a href="">2</a>
+                    <a href="">3</a>
+                    <a href="">4</a>
+                    <a href="">5</a>
+                    <a href="">6</a>
+                    <a href="" class="next"><img src="../../public/admin/Assets/images/icon8.png" alt=""/></a>
+                   -->
+		         </span>
+                <!--分页-->
+                </div>
+            </div>
+            </form>
+            <!--右边底部-->
+        </div>
+        <!--会议列表-->
+    </div>
+</div>
+<script>
+$('#stoptime').datetimepicker({
+      format:"Y-m-d H:i",      //格式化日期
+      todayButton:false    //关闭选择今天按钮
+});
+$('#starttime').datetimepicker({
+      format:"Y-m-d H:i",      //格式化日期
+      todayButton:false    //关闭选择今天按钮
+});
+SE.ShipDataList();
+function dataall(){
+ $('#stoptime').val("");
+ $('#starttime').val("");
+ SE.ShipDataList();
+}
+</script>
+</body>
+</html>
