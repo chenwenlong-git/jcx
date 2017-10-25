@@ -66,7 +66,7 @@ class Index extends Controller
 		 }else{
 		  $OrderId='';
 		 }
-         $result = Db::query('select * from think_orderlist where Type=0 '.$DataTime.$OrderId.' order by DataTime desc');
+         $result = Db::query('select * from think_orderlist where Type=0 '.$DataTime.$OrderId.' order by WriteTime desc');
          $pagepar = 10;
 		 $rel[0]['num']=count($result);
          $rel[1]['sum'] = ceil($rel[0]['num'] / $pagepar);
@@ -77,7 +77,7 @@ class Index extends Controller
             $lim = (($curren - 1) * $pagepar) . "," . $end;
          }
 
-		 $result = Db::query('select * from think_orderlist where Type=0 '.$DataTime.$OrderId.' order by DataTime desc limit ' . $lim);
+		 $result = Db::query('select * from think_orderlist where Type=0 '.$DataTime.$OrderId.' order by WriteTime desc limit ' . $lim);
 		 $info = Db::name('orderdata')->where('Id',$id)->select();
 		 foreach ($result as $k => $v) {
 		    $result[$k]['OrderNum']=$info[0]['OrderNum'];
@@ -109,7 +109,7 @@ class Index extends Controller
 		 }else{
 		  $OrderId='';
 		 }
-         $result = Db::query('select * from think_orderlist where Type=1 '.$DataTime.$OrderId.' order by DataTime desc');
+         $result = Db::query('select * from think_orderlist where Type=1 '.$DataTime.$OrderId.' order by WriteTime desc');
          $pagepar = 10;
 		 $rel[0]['num']=count($result);
          $rel[1]['sum'] = ceil($rel[0]['num'] / $pagepar);
@@ -120,7 +120,7 @@ class Index extends Controller
             $lim = (($curren - 1) * $pagepar) . "," . $end;
          }
 
-		 $result = Db::query('select * from think_orderlist where Type=1 '.$DataTime.$OrderId.' order by DataTime desc limit ' . $lim);
+		 $result = Db::query('select * from think_orderlist where Type=1 '.$DataTime.$OrderId.' order by WriteTime desc limit ' . $lim);
 		 $info = Db::name('orderdata')->where('Id',$id)->select();
 		 foreach ($result as $k => $v) {
 		    $result[$k]['OrderNum']=$info[0]['OrderNum'];
@@ -206,7 +206,7 @@ class Index extends Controller
 		 }else{
 		  $OrderTime='';
 		 }
-         $result = Db::query('select * from think_orderdata where 1=1 '.$OrderNum.$ClientName.$OrderTime.' order by OrderTime desc');
+         $result = Db::query('select * from think_orderdata where 1=1 '.$OrderNum.$ClientName.$OrderTime.' order by WriteTime desc');
 
          $pagepar = 10;
 		 $rel[0]['num']=count($result);
@@ -218,7 +218,7 @@ class Index extends Controller
             $lim = (($curren - 1) * $pagepar) . "," . $end;
          }
 
-		 $result = Db::query('select * from think_orderdata where 1=1 '.$OrderNum.$ClientName.$OrderTime.' order by OrderTime desc limit ' . $lim);
+		 $result = Db::query('select * from think_orderdata where 1=1 '.$OrderNum.$ClientName.$OrderTime.' order by WriteTime desc limit ' . $lim);
 		
 		 if($result){
 		  $arr=array('code'=>1,'message'=>$rel,'hint'=>'查询成功！','data'=>$result);
@@ -250,7 +250,7 @@ class Index extends Controller
 		 }else{
 		  $OrderTime='';
 		 }
-         $result = Db::query('select * from think_orderdata where 1=1 '.$OrderNum.$ClientName.$OrderTime.' order by OrderTime desc');
+         $result = Db::query('select * from think_orderdata where 1=1 '.$OrderNum.$ClientName.$OrderTime.' order by WriteTime desc');
 
          $pagepar = 10;
 		 $rel[0]['num']=count($result);
@@ -262,7 +262,7 @@ class Index extends Controller
             $lim = (($curren - 1) * $pagepar) . "," . $end;
          }
 
-		 $result = Db::query('select * from think_orderdata where 1=1 '.$OrderNum.$ClientName.$OrderTime.' order by OrderTime desc limit ' . $lim);
+		 $result = Db::query('select * from think_orderdata where 1=1 '.$OrderNum.$ClientName.$OrderTime.' order by WriteTime desc limit ' . $lim);
 
 		 foreach ($result as $k => $v) {
             $data = Db::query('select sum(NumData) as num from think_orderlist where OrderId='.$result[$k]['Id'].' and Type=0 '); //交货统计
