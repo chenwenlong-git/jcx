@@ -74,7 +74,8 @@ SE.OrderStatistics = function (page) {
 	var ClientName=$("#ClientName").val();
 	var starttime=$("#starttime").val();
 	var stoptime=$("#stoptime").val();
-    
+    var startnot=$("#startnot").val();
+	var stopnot=$("#stopnot").val();
     var page = page || 1;
     $.ajax({
         type: 'GET',
@@ -86,35 +87,42 @@ SE.OrderStatistics = function (page) {
 			OrderNum: OrderNum,
 			ClientName: ClientName,
 			starttime: starttime,
-			stoptime: stoptime
+			stoptime: stoptime,
+			startnot: startnot,
+			stopnot: stopnot
         },
         success: function (e) {
             if (e.code == 1) {
                 var stringHtml = "";
-				var Status = [];
                 $.each(e.data, function (i, v) {
-
+                    var Status = "";
+				    var Status1 = "";
+				    var Status2 = "";
+				    var Status3 = "";
+				    var Status4 = "";
+				    var Status5 = "";
+				    var Status6 = "";
 					if(v['ShipNumData']==null){ var ShipNumData=0; }else{ var ShipNumData= parseInt(v['ShipNumData']); }
 					if(v['ReturnNumData']==null){ var ReturnNumData=0; }else{ var ReturnNumData= parseInt(v['ReturnNumData']);  }
 					if(v['NumData']==null){ var NumData=0; }else{ var NumData= parseInt(v['NumData']);  }
 					
-					if(v['Status']==0){ Status[0] = "selected = 'selected'"; }
-					if(v['Status']==1){ Status[1] = "selected = 'selected'"; }
-					if(v['Status']==2){ Status[2] = "selected = 'selected'"; }
-					if(v['Status']==3){ Status[3] = "selected = 'selected'"; }
-					if(v['Status']==4){ Status[4] = "selected = 'selected'"; }
-					if(v['Status']==5){ Status[5] = "selected = 'selected'"; }
+					if(v['Status']=="0"){ Status = "selected = 'selected'"; }
+					if(v['Status']=="1"){ Status1 = "selected = 'selected'"; }
+					if(v['Status']=="2"){ Status2 = "selected = 'selected'"; }
+					if(v['Status']=="3"){ Status3 = "selected = 'selected'"; }
+					if(v['Status']=="4"){ Status4 = "selected = 'selected'"; }
+					if(v['Status']=="5"){ Status5 = "selected = 'selected'"; }
                     stringHtml += "<tr><td>" +   ((i + 1) + (page - 1) * 10)  + "</td>";
                     stringHtml += "<td title='" + v['OrderNum'] + "'>" + v['OrderNum'] + "</td>";
                     stringHtml += "<td title='" + v['ClientName'] + "'>" + v['ClientName'] + "</td>";
                     stringHtml += "<td title='" + v['OrderTime'] + "'>" + v['OrderTime'] + "</td>";
 					stringHtml += "<td title='" + v['UnitPrice'] + "'>" + v['UnitPrice'] + "</td>";
-					stringHtml += "<td title='" + v['TotalAmount'] + "'>" + v['TotalAmount'] + "</td>";
+					stringHtml += "<td title='" + v['NormName'] + "'>" + v['NormName'] + "</td>";
 					stringHtml += "<td title='" + v['NumData'] + "'>" + v['NumData'] + "</td>";
 					stringHtml += "<td title='" + ShipNumData + "'><a href='../../admin/index/shiplist?id="+v['Id']+"'>" + ShipNumData + "</a></td>";
 					stringHtml += "<td title='" + ReturnNumData + "'><a href='../../admin/index/returnlist?id="+v['Id']+"'>" + ReturnNumData + "</a></td>";
 					stringHtml += "<td>" + ((NumData+ReturnNumData)-ShipNumData) + "</td>";
-					stringHtml += "<td><select id='Status' data_id='"+v['Id']+"' onchange='SE.StatusEdit(this)'><option value='0' "+ Status[0] +">无</option><option value='1' "+ Status[1] +" >待车</option><option value='2' "+ Status[2] +">待镀</option><option value='3' "+ Status[3] +">待装</option><option value='4' "+ Status[4] +">待包</option><option value='5' "+ Status[5] +">待交</option></select></td>";
+					stringHtml += "<td><select id='Status' data_id='"+v['Id']+"' onchange='SE.StatusEdit(this)'><option value='0' "+ Status +">无</option><option value='1' "+ Status1 +" >待车</option><option value='2' "+ Status2 +">待镀</option><option value='3' "+ Status3 +">待装</option><option value='4' "+ Status4 +">待包</option><option value='5' "+ Status5 +">待交</option></select></td>";
 					stringHtml += "<td><a href='../../admin/index/addorder?cid="+v['Id']+"'>增加</a> | <a href='../../admin/index/chartshow?cid="+v['Id']+"'>图表</a></td>";
 					stringHtml += "</tr>";
                 })

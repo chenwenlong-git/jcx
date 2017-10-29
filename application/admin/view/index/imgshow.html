@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>图片切换效果</title>
+    <script type="text/javascript" src="../../public/js/jquery.min.js"></script>
+	<script type="text/javascript" src="../../public/js/picbox.js"></script>
+	<link rel="stylesheet" href="../../public/css/picbox.css" type="text/css" media="screen" />
+	</head>
+	<body>
+    <div id="main">
+	{volist name="data" id="dataimg"}
+	  <a href="../../{$dataimg}" rel="lightbox-group" title="图片{$i}"></a>
+	 {/volist}
+    </div>
+</body>
+<script>
+$(function(){
+$("#main").find("a").click();
+}); 
+
+</script>
+</html>

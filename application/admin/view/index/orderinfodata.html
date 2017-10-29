@@ -13,6 +13,8 @@
 <link rel="stylesheet" type="text/css" href="../../public/css/page.css">
 <script type="text/javascript" src="../../public/js/ajax.js"></script>
 <script type="text/javascript" src="../../public/js/jquery.page.js"></script>
+<link rel="stylesheet" type="text/css" href="../../public/css/zeroModal.css">
+<script type="text/javascript" src="../../public/js/zeroModal.js"></script>
 
 <script type="text/javascript">
 $(function(){
@@ -98,6 +100,7 @@ function editorder(id){
 				 <td>针管</td>
 				 <td>弹簧</td>
 				 <td>备注</td>
+				 <td>图片</td>
               </tr>
 			  <tbody class="orderlist"> 
 			 {volist name="orderdata" id="order"}
@@ -108,6 +111,7 @@ function editorder(id){
                 <td>{$order.Needle}</td>
 				<td>{$order.Spring}</td>
 				<td>{$order.Remarks}</td>
+				<td style="cursor:pointer;" data_img='{$order.Id}' onclick="imgshow(this);">查看</td>
               </tr>
 		      {/volist}
               </tbody> 
@@ -145,5 +149,20 @@ function editorder(id){
         <!--会议列表-->
     </div>
 </div>
+<script>
+    function imgshow(e) {
+		var id=$(e).attr("data_img");
+	  zeroModal.show({
+            title: '查看图片',
+            iframe: true,
+            url: '../../admin/index/imgshow?id=' + id + '',
+            width: '1000px',
+            height: '550px',
+            cancel: true,
+            //关闭按钮
+            cancel: false,
+        });
+    }
+</script>
 </body>
 </html>

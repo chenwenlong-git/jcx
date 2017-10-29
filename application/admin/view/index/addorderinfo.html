@@ -6,9 +6,20 @@
 <link rel="stylesheet" type="text/css" href="../../public/admin/Assets/css/reset.css"/>
 <link rel="stylesheet" type="text/css" href="../../public/admin/Assets/css/common.css"/>
 <link rel="stylesheet" type="text/css" href="../../public/admin/Assets/css/thems.css">
+<link href="../../public/css/iconfont.css" rel="stylesheet" type="text/css"/>
+<link href="../../public/css/fileUpload.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" type="text/css" href="../../public/admin/Assets/css/jquery.datetimepicker.css">
 <script type="text/javascript" src="../../public/admin/Assets/js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="../../public/admin/Assets/js/jquery.datetimepicker.js"></script>
+
+    <link href="../../public/css/prettify.css" rel="stylesheet" />
+    <link href="../../public/css/bootstrap.css" rel="stylesheet">
+    <script src="../../public/js/prettify.js" type="text/javascript"></script>
+
+    <script src="../../public/js/mockjax.js" type="text/javascript"></script>
+    <script src="../../public/js/bootstrap-typeahead.js" type="text/javascript"></script>
+
+
 <script type="text/javascript">
 $(function(){
 	//自适应屏幕宽度
@@ -23,9 +34,14 @@ $(function(){
 	$('#zengjia').click(function(){
 	   var cxsj=$("#cxsj").val();
 	   var ddsj=$("#ddsj").val();
-	   if(cxsj==""){alert("订单号不能为空！"); return}
-	   if(ddsj==""){alert("订单号的时间不能为空！"); return}
-	   $("#formtj").submit();
+	   //if(cxsj==""){alert("订单号不能为空！"); return}
+	   //if(ddsj==""){alert("订单号的时间不能为空！"); return}
+	   if($(".box").html()==""){
+	      $("#formtj").submit();
+	   }else{
+	      $(".icon-shangchuan").click();
+	   }
+	
      });
 
 });
@@ -42,6 +58,13 @@ $(function(){
 .shuru {  height: 25px; line-height:25px;padding-left:3px; width: 180px;}
 .OrderNum{ height: 25px; line-height:25px; min-width: 180px; }
 .shurutet{width: 180px;padding-left:3px; }
+.selectFileBt{ line-height:1; }
+.fileName{ line-height:3.5; }
+.fileUploadContent .fileItem .fileName{ clear:none;}
+.fileUploadContent .uploadBts>div .selectFileBt{ font-size:12px; background-color: #3D89CB;}
+.icon-shangchuan{  display:none; }
+.fileUploadContent .uploadBts>div i{ font-size: 30px; position:relative;top:-5px; color: #3D89CB;   }
+.box{width:99%;}
 </style>
 </head>
 <body onLoad="Resize();">
@@ -73,7 +96,7 @@ $(function(){
                 <!--当前位置-->
             </div>
             <!--查询-->
-            <div class="search">
+            <div class="search" style="padding-top:10px;">
            {if condition="$orderea  eq  0"}
 			<form action="../../admin/index/adddatalist" id="formtj" method="post">
                 <div>订 单 号：<input name="OrderNum" id="OrderNum" class="shuru"   type="text"></div>
@@ -81,15 +104,19 @@ $(function(){
 				<div>交付日期：<input name="DeliverName" id="DeliverName" class="shuru" readonly  type="text"></div>
 				<div>客户名称：<input name="ClientName" id="ClientName" class="shuru"   type="text"></div>
 				<div>物料编码：<input name="MaterialsNum" id="MaterialsNum" class="shuru"   type="text"></div>
-				<div>规格名称：<input name="NormName" id="NumData" class="shuru"   type="text"></div>
-				<div>数　　量：<input name="NumData" id="ddsj" class="shuru"   type="text"></div>
-				<div>单　　价：<input name="UnitPrice" id="ddsj" class="shuru"   type="text"></div>
-				<div>总 金 额：<input name="TotalAmount" id="ddsj" class="shuru"   type="text"></div>
-				<div>针　　头：<input name="Needles" id="ddsj" class="shuru"   type="text"></div>
-				<div>针　　管：<input name="Needle" id="ddsj" class="shuru"   type="text"></div>
-				<div>弹　　簧：<input name="Spring" id="ddsj" class="shuru"   type="text"></div>
+				<div>规格名称：<input name="NormName" id="NormName" class="shuru"   type="text"></div>
+				<div>数　　量：<input name="NumData" id="NumData" class="shuru"   type="text"></div>
+				<div>单　　价：<input name="UnitPrice" id="UnitPrice" class="shuru"   type="text"></div>
+				<div>总 金 额：<input name="TotalAmount" id="TotalAmount" class="shuru"   type="text"></div>
+				<div>针　　头：<input name="Needles" id="Needles" class="shuru"   type="text"></div>
+				<div>针　　管：<input name="Needle" id="Needle" class="shuru"   type="text"></div>
+				<div>弹　　簧：<input name="Spring" id="Spring" class="shuru"   type="text"></div>
 				<div>备　　注：
 				<textarea rows="3" cols="20" name="Remarks"  class="shurutet" ></textarea>
+				</div>
+                <div style="margin-top:10px;">
+				    <div id="fileUploadContent" class="fileUploadContent"></div>
+					<input type="hidden" name="UploadImg" id="UploadImg" value="" />
 				</div>
                <a href="javascript:;" id="zengjia" class="zengjia">增加</a>
 			   <a href="javascript:;" onclick="location.href ='../../admin/index/orderinfo'"  id="" class="quxiao">返回</a>
@@ -102,19 +129,26 @@ $(function(){
 				<div>客户名称：<input name="ClientName" id="ClientName" value="{$orderdata.ClientName}" class="shuru"   type="text"></div>
 				<div>物料编码：<input name="MaterialsNum" id="MaterialsNum" value="{$orderdata.MaterialsNum}" class="shuru"   type="text"></div>
 				<div>规格名称：<input name="NormName" id="NumData" value="{$orderdata.NormName}" class="shuru"   type="text"></div>
-				<div>数　　量：<input name="NumData" id="ddsj" value="{$orderdata.NumData}" class="shuru"   type="text"></div>
-				<div>单　　价：<input name="UnitPrice" id="ddsj" value="{$orderdata.UnitPrice}" class="shuru"   type="text"></div>
-				<div>总 金 额：<input name="TotalAmount" id="ddsj" value="{$orderdata.TotalAmount}" class="shuru"   type="text"></div>
-				<div>针　　头：<input name="Needles" id="ddsj" class="shuru"  value="{$orderdata.Needles}"  type="text"></div>
-				<div>针　　管：<input name="Needle" id="ddsj" class="shuru"  value="{$orderdata.Needle}"   type="text"></div>
-				<div>弹　　簧：<input name="Spring" id="ddsj" class="shuru"   value="{$orderdata.Spring}" type="text"></div>
+				<div>数　　量：<input name="NumData" id="NumData" value="{$orderdata.NumData}" class="shuru"   type="text"></div>
+				<div>单　　价：<input name="UnitPrice" id="UnitPrice" value="{$orderdata.UnitPrice}" class="shuru"   type="text"></div>
+				<div>总 金 额：<input name="TotalAmount" id="TotalAmount" value="{$orderdata.TotalAmount}" class="shuru"   type="text"></div>
+				<div>针　　头：<input name="Needles" id="Needles" class="shuru"  value="{$orderdata.Needles}"  type="text"></div>
+				<div>针　　管：<input name="Needle" id="Needle" class="shuru"  value="{$orderdata.Needle}"   type="text"></div>
+				<div>弹　　簧：<input name="Spring" id="Spring" class="shuru"   value="{$orderdata.Spring}" type="text"></div>
 				<div>备　　注：
 				<textarea rows="3" cols="20" name="Remarks"  class="shurutet" >{$orderdata.Remarks}</textarea>
 				</div>
+				<div style="margin-top:10px;">
+				    <div id="fileUploadContent" class="fileUploadContent"></div>
+					<input type="hidden" name="UploadImg" id="UploadImg" value="0" />
+				</div>
+				<div style="color:red;">
+				 ※ 新上传的图片将覆盖原来的图片！
+                </div>
                <a href="javascript:;" id="zengjia" class="zengjia">修改</a>
 			   <a href="javascript:;" onclick="javascript:void(history.back())"  id="" class="quxiao">返回</a>
 			    <input type="hidden" name="id" value="{$id}" />
-				</form>
+			 </form>
 			 {/if}
             </div>
             <!--查询-->
@@ -133,6 +167,75 @@ $(function(){
       format:"Y-m-d H:i",      //格式化日期
       todayButton:false    //关闭选择今天按钮
     });
+
   </script>
+<script type="text/javascript" src="../../public/js/fileUpload.js"></script>
+<script type="text/javascript">
+    $("#fileUploadContent").initUpload({
+        "uploadUrl":"../../admin/index/UploadImg",//上传文件信息地址
+        //"progressUrl":"#",//获取进度信息地址，可选，注意需要返回的data格式如下（{bytesRead: 102516060, contentLength: 102516060, items: 1, percent: 100, startTime: 1489223136317, useTime: 2767}）
+        "showSummerProgress":false,//总进度条，默认限制
+        "scheduleStandard":false,//模拟进度的方式，设置为true是按总进度，用于控制上传时间，如果设置为false,按照文件数据的总量,默认为false
+        //"size":350,//文件大小限制，单位kb,默认不限制
+        //"maxFileNumber":3,//文件个数限制，为整数
+        //"filelSavePath":"",//文件上传地址，后台设置的根目录
+        //"beforeUpload":beforeUploadFun,//在上传前执行的函数
+        "onUpload":onUploadFun,//在上传后执行的函数
+       // autoCommit:true,//文件是否自动上传
+       "fileType":['png','jpg','bmp']//文件类型限制，默认不限制，注意写的是文件后缀
+
+    });
+	function onUploadFun(opt,d){
+		var e= JSON.parse(d);  
+		if(e.code==1){
+        //uploadTools.uploadSuccess(opt);//显示上传成功
+		$("#UploadImg").val(e.data);
+	    $("#formtj").submit();
+		}else{
+		uploadTools.uploadError(opt);//显示上传错误
+		}
+
+    }
+
+	$(".icon-qingchu").css("color","#3D89CB");
+
+function displayResult(item, val, text) {
+    console.log(item);
+    $('.alert').show().html('You selected <strong>' + val + '</strong>: <strong>' + text + '</strong>');
+}
+
+$(function () {
+
+    $('#OrderNum').typeahead({
+        source: {$OrderNumData},
+        itemSelected: displayResult
+    });
+	$('#ClientName').typeahead({
+        source: {$ClientNameData},
+        itemSelected: displayResult
+    });
+	$('#MaterialsNum').typeahead({
+        source: {$MaterialsNumData},
+        itemSelected: displayResult
+    });
+	$('#NormName').typeahead({
+        source: {$NormNameData},
+        itemSelected: displayResult
+    });
+	$('#Needles').typeahead({
+        source: {$NeedlesData},
+        itemSelected: displayResult
+    });
+	$('#Needle').typeahead({
+        source: {$NeedleData},
+        itemSelected: displayResult
+    });
+	$('#Spring').typeahead({
+        source: {$SpringData},
+        itemSelected: displayResult
+    });
+});
+</script>
+
 </body>
 </html>

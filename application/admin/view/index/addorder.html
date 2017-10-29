@@ -74,7 +74,7 @@ $(function(){
            {if condition="$orderea  eq  0"}
 			<form action="../../admin/index/adddata" id="formtj" method="post">
                 <div>订 单 号：<input name="OrderNum" id="OrderNum" class="shuru" readonly value="{$OrderNum}" type="text" >&nbsp;<span class="NotPaidNuminfo">当前未交数量：{$NotPaidNuminfo}</span></div>
-				<div>快递单号：<input name="ExpressNum" id="ExpressNum" class="shuru" type="text" ></div>
+				<div>送货单号：<input name="ExpressNum" id="ExpressNum" class="shuru" type="text" ></div>
 				<div>数　　量：<input name="NumData" id="NumData" class="shuru" type="text" ></div>
 				<div>时　　间：<input name="DataTime" id="DataTime" class="shuru" readonly  type="text"></div>
                 <div>
@@ -93,7 +93,7 @@ $(function(){
 			{else /}
 			  <form action="../../admin/index/editdata" id="formtj" method="post">
                  <div>订 单 号：<input name="OrderNum" id="OrderNum" class="shuru" readonly value="{$OrderNum}" type="text" >&nbsp;<span class="NotPaidNuminfo">当前未交数量：{$NotPaidNuminfo}</span></div>
-				<div>快递单号：<input name="ExpressNum" id="ExpressNum" class="shuru" type="text" value="{$orderlist.ExpressNum}"  ></div>
+				<div>送货单号：<input name="ExpressNum" id="ExpressNum" class="shuru" type="text" value="{$orderlist.ExpressNum}"  ></div>
 				<div>数　　量：<input name="NumData" id="NumData" class="shuru" type="text" value="{$orderlist.NumData}"  ></div>
 				<div>时　　间：<input name="DataTime" id="DataTime" class="shuru" readonly value="{$orderlist.DataTime}"  type="text"></div>
                 <div>
@@ -105,7 +105,7 @@ $(function(){
 				<div>备　　注：
 				<textarea rows="3" cols="20" name="Remarks"  class="shurutet" >{$orderlist.Remarks}</textarea>
 				</div>
-               <a href="javascript:;" id="zengjia" class="zengjia">增加</a>
+               <a href="javascript:;" id="zengjia" class="zengjia">修改</a>
 			   <a href="javascript:;" onclick="javascript:void(history.back())"  id="" class="quxiao">返回</a>
 			   <input type="hidden" name="id" value="{$id}" />
 			   <input type="hidden" name="cid" value="{$cid}" />

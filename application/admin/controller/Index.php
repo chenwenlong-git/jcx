@@ -26,6 +26,14 @@ class Index extends Controller
     {   
         return $this->fetch();
     }
+	public function imgshow()
+    { 
+		$id=$_GET["id"];
+		$orderdata = Db::name('orderdata') ->where(['Id'=> $id])->find();
+		$dataarr=json_decode($orderdata["UploadImg"]);
+		$this->assign('data', $dataarr);
+        return $this->fetch();
+    }
 	public function chartshow()
     {   
         if(!Session::has('uname')){ $this->error('请您重新登录！','/index'); }
@@ -66,7 +74,7 @@ class Index extends Controller
 		 }else{
 		  $OrderId='';
 		 }
-         $result = Db::query('select * from think_orderlist where Type=0 '.$DataTime.$OrderId.' order by WriteTime desc');
+         $result = Db::query('select * from think_orderlist where Type=0 '.$DataTime.$OrderId.' order by DataTime desc');
          $pagepar = 10;
 		 $rel[0]['num']=count($result);
          $rel[1]['sum'] = ceil($rel[0]['num'] / $pagepar);
@@ -77,7 +85,7 @@ class Index extends Controller
             $lim = (($curren - 1) * $pagepar) . "," . $end;
          }
 
-		 $result = Db::query('select * from think_orderlist where Type=0 '.$DataTime.$OrderId.' order by WriteTime desc limit ' . $lim);
+		 $result = Db::query('select * from think_orderlist where Type=0 '.$DataTime.$OrderId.' order by DataTime desc limit ' . $lim);
 		 $info = Db::name('orderdata')->where('Id',$id)->select();
 		 foreach ($result as $k => $v) {
 		    $result[$k]['OrderNum']=$info[0]['OrderNum'];
@@ -109,7 +117,7 @@ class Index extends Controller
 		 }else{
 		  $OrderId='';
 		 }
-         $result = Db::query('select * from think_orderlist where Type=1 '.$DataTime.$OrderId.' order by WriteTime desc');
+         $result = Db::query('select * from think_orderlist where Type=1 '.$DataTime.$OrderId.' order by DataTime desc');
          $pagepar = 10;
 		 $rel[0]['num']=count($result);
          $rel[1]['sum'] = ceil($rel[0]['num'] / $pagepar);
@@ -120,7 +128,7 @@ class Index extends Controller
             $lim = (($curren - 1) * $pagepar) . "," . $end;
          }
 
-		 $result = Db::query('select * from think_orderlist where Type=1 '.$DataTime.$OrderId.' order by WriteTime desc limit ' . $lim);
+		 $result = Db::query('select * from think_orderlist where Type=1 '.$DataTime.$OrderId.' order by DataTime desc limit ' . $lim);
 		 $info = Db::name('orderdata')->where('Id',$id)->select();
 		 foreach ($result as $k => $v) {
 		    $result[$k]['OrderNum']=$info[0]['OrderNum'];
@@ -187,10 +195,10 @@ class Index extends Controller
 	{
 		 header('Content-Type:application/json; charset=utf-8');
 		 $page=$_GET['page'];
-		 $OrderNum=$_GET['OrderNum'];
-		 $ClientName=$_GET['ClientName'];
-		 $starttime=$_GET['starttime'];
-		 $stoptime=$_GET['stoptime'];
+		 $OrderNum=trim($_GET['OrderNum']);
+		 $ClientName=trim($_GET['ClientName']);
+		 $starttime=trim($_GET['starttime']);
+		 $stoptime=trim($_GET['stoptime']);
 		 if(!empty($OrderNum)){
 		  $OrderNum=" and OrderNum like '%".$OrderNum."%' ";
 		 }else{
@@ -206,7 +214,7 @@ class Index extends Controller
 		 }else{
 		  $OrderTime='';
 		 }
-         $result = Db::query('select * from think_orderdata where 1=1 '.$OrderNum.$ClientName.$OrderTime.' order by WriteTime desc');
+         $result = Db::query('select * from think_orderdata where 1=1 '.$OrderNum.$ClientName.$OrderTime.' order by OrderTime desc');
 
          $pagepar = 10;
 		 $rel[0]['num']=count($result);
@@ -218,7 +226,7 @@ class Index extends Controller
             $lim = (($curren - 1) * $pagepar) . "," . $end;
          }
 
-		 $result = Db::query('select * from think_orderdata where 1=1 '.$OrderNum.$ClientName.$OrderTime.' order by WriteTime desc limit ' . $lim);
+		 $result = Db::query('select * from think_orderdata where 1=1 '.$OrderNum.$ClientName.$OrderTime.' order by OrderTime desc limit ' . $lim);
 		
 		 if($result){
 		  $arr=array('code'=>1,'message'=>$rel,'hint'=>'查询成功！','data'=>$result);
@@ -231,10 +239,12 @@ class Index extends Controller
 	{
 		 header('Content-Type:application/json; charset=utf-8');
 		 $page=$_GET['page'];
-		 $OrderNum=$_GET['OrderNum'];
-		 $ClientName=$_GET['ClientName'];
-		 $starttime=$_GET['starttime'];
-		 $stoptime=$_GET['stoptime'];
+		 $OrderNum= trim($_GET['OrderNum']);
+		 $ClientName=trim($_GET['ClientName']);
+		 $starttime=trim($_GET['starttime']);
+		 $stoptime=trim($_GET['stoptime']);
+		 $startnot=trim($_GET['startnot']);
+		 $stopnot=trim($_GET['stopnot']);
 		 if(!empty($OrderNum)){
 		  $OrderNum=" and OrderNum like '%".$OrderNum."%' ";
 		 }else{
@@ -250,7 +260,7 @@ class Index extends Controller
 		 }else{
 		  $OrderTime='';
 		 }
-         $result = Db::query('select * from think_orderdata where 1=1 '.$OrderNum.$ClientName.$OrderTime.' order by WriteTime desc');
+         $result = Db::query('select * from think_orderdata where 1=1 '.$OrderNum.$ClientName.$OrderTime.' order by OrderTime desc');
 
          $pagepar = 10;
 		 $rel[0]['num']=count($result);
@@ -262,13 +272,20 @@ class Index extends Controller
             $lim = (($curren - 1) * $pagepar) . "," . $end;
          }
 
-		 $result = Db::query('select * from think_orderdata where 1=1 '.$OrderNum.$ClientName.$OrderTime.' order by WriteTime desc limit ' . $lim);
+		 $result = Db::query('select * from think_orderdata where 1=1 '.$OrderNum.$ClientName.$OrderTime.' order by OrderTime desc limit ' . $lim);
 
 		 foreach ($result as $k => $v) {
             $data = Db::query('select sum(NumData) as num from think_orderlist where OrderId='.$result[$k]['Id'].' and Type=0 '); //交货统计
 			$data1 = Db::query('select sum(NumData) as num from think_orderlist where OrderId='.$result[$k]['Id'].' and Type=1 '); //退货统计
             $result[$k]['ShipNumData']=$data[0]['num'];
             $result[$k]['ReturnNumData']=$data1[0]['num'];
+			$notnum=($result[$k]['NumData']+$result[$k]['ReturnNumData'])-$result[$k]['ShipNumData'];
+			if($startnot!="" && $stopnot!=""){
+				if($notnum>=$startnot && $notnum<=$stopnot){
+				}else{
+				 unset($result[$k]);
+				}
+			}
 		 }
 		
 		 if($result){
@@ -363,6 +380,7 @@ class Index extends Controller
     {   
         if(!Session::has('uname')){ $this->error('请您重新登录！','/index'); }
         $rderdata = Db::name('orderlist')->select();
+		$rderinfo = Db::name('orderdata')->select();
 		if(isset($_GET["id"])){
 		  $id=$_GET["id"];
 		  $result = Db::name('orderdata')
@@ -377,6 +395,48 @@ class Index extends Controller
 		  $this->assign('orderea', 0);
 		}
 		$this->assign('rderdata', $rderdata);
+        $OrderNumData='[';
+		$ClientNameData='[';
+		$MaterialsNumData='[';
+		$NormNameData='[';
+		$NeedlesData='[';
+		$NeedleData='[';
+		$SpringData='[';
+        foreach($rderinfo as $k=>$v){
+		 if($k==0){
+		  $OrderNumData .='{ id: '.$k.', name: "'.$rderinfo[$k]["OrderNum"].'" }';
+		  $ClientNameData .='{ id: '.$k.', name: "'.$rderinfo[$k]["ClientName"].'" }';
+		  $MaterialsNumData .='{ id: '.$k.', name: "'.$rderinfo[$k]["MaterialsNum"].'" }';
+		  $NormNameData .='{ id: '.$k.', name: "'.$rderinfo[$k]["NormName"].'" }';
+          $NeedlesData .='{ id: '.$k.', name: "'.$rderinfo[$k]["Needles"].'" }';
+		  $NeedleData .='{ id: '.$k.', name: "'.$rderinfo[$k]["Needle"].'" }';
+		  $SpringData .='{ id: '.$k.', name: "'.$rderinfo[$k]["Spring"].'" }';
+		 }else{
+		  $OrderNumData .=',{ id: '.$k.', name: "'.$rderinfo[$k]["OrderNum"].'" }';
+		  $ClientNameData .=',{ id: '.$k.', name: "'.$rderinfo[$k]["ClientName"].'" }';
+		  $MaterialsNumData .=',{ id: '.$k.', name: "'.$rderinfo[$k]["MaterialsNum"].'" }';
+		  $NormNameData .=',{ id: '.$k.', name: "'.$rderinfo[$k]["NormName"].'" }';
+          $NeedlesData .=',{ id: '.$k.', name: "'.$rderinfo[$k]["Needles"].'" }';
+		  $NeedleData .=',{ id: '.$k.', name: "'.$rderinfo[$k]["Needle"].'" }';
+		  $SpringData .=',{ id: '.$k.', name: "'.$rderinfo[$k]["Spring"].'" }';
+		 }
+		}
+		$OrderNumData.=']';
+		$ClientNameData.=']';
+		$MaterialsNumData.=']';
+		$NormNameData.=']';
+		$NeedlesData.=']';
+		$NeedleData.=']';
+		$SpringData.=']';
+
+		$this->assign('OrderNumData', $OrderNumData);
+		$this->assign('ClientNameData', $ClientNameData);
+		$this->assign('MaterialsNumData', $MaterialsNumData);
+		$this->assign('NormNameData', $NormNameData);
+		$this->assign('NeedlesData', $NeedlesData);
+		$this->assign('NeedleData', $NeedleData);
+		$this->assign('SpringData', $SpringData);
+
         return $this->fetch();
     }
 	public function adddata()
@@ -394,7 +454,7 @@ class Index extends Controller
            'ExpressNum'   => $ExpressNum
             ])
             ->find();
-		if($result){ return $this->error('输入的快递单号已存在，请重新输入！','../../admin/index/hy_list'); }
+		//if($result){ return $this->error('输入的快递单号已存在，请重新输入！','../../admin/index/hy_list'); }
 
         $orderdata = Db::name('orderdata') ->where(['Id'=> $OrderId])->find();
         $data = Db::query('select sum(NumData) as num from think_orderlist where OrderId='.$OrderId.' and Type=0 '); //交货统计
@@ -440,8 +500,11 @@ class Index extends Controller
 		$Spring=trim($_POST["Spring"]);
 		$Remarks=trim($_POST["Remarks"]);
 
-		$result = Db::name('orderdata')->where([ 'OrderNum'   => $OrderNum ]) ->find();
-		if($result){  return $this->error('输入的订单号已存在，请重新输入！'); }
+		$UploadImg=trim($_POST["UploadImg"]);
+        $UploadImgarr=explode(",",$UploadImg);
+        $UploadImg=json_encode($UploadImgarr);
+		//$result = Db::name('orderdata')->where([ 'OrderNum'   => $OrderNum ]) ->find();
+		//if($result){  return $this->error('输入的订单号已存在，请重新输入！'); }
 
 	    $Orde           = new OrderinfoModel;
 		$Orde->UserName = Session::get('uname');
@@ -459,6 +522,7 @@ class Index extends Controller
 		$Orde->Needle    = $Needle;
 		$Orde->Spring    = $Spring;
 		$Orde->Remarks    = $Remarks;
+		$Orde->UploadImg    = $UploadImg;
         $Orde->WriteTime = date("Y-m-d H:i:s");
         if ($Orde->save()) {
             return $this->success('恭喜您增加成功！','../../admin/index/addorderinfo');
@@ -483,9 +547,13 @@ class Index extends Controller
 		$Needle= trim($_POST["Needle"]);
 		$Spring= trim($_POST["Spring"]);
 		$Remarks= trim($_POST["Remarks"]);
+        
+		$UploadImg=trim($_POST["UploadImg"]);
+        $UploadImgarr=explode(",",$UploadImg);
+        $UploadImg=json_encode($UploadImgarr);
 
-		$result = Db::name('orderdata')->where('Id', '<>', $id)->where([ 'OrderNum'   => $OrderNum ]) ->find();
-		if($result){  return $this->error('输入的订单号已存在，请重新输入！'); }
+		//$result = Db::name('orderdata')->where('Id', '<>', $id)->where([ 'OrderNum'   => $OrderNum ]) ->find();
+		//if($result){  return $this->error('输入的订单号已存在，请重新输入！'); }
 		
 		$Orde           = OrderinfoModel::get($id);
 		$Orde->UserName = Session::get('uname');
@@ -503,6 +571,7 @@ class Index extends Controller
 		$Orde->Needle    = $Needle;
 		$Orde->Spring    = $Spring;
 		$Orde->Remarks    = $Remarks;
+		if($_POST["UploadImg"]!="0"){ $Orde->UploadImg    = $UploadImg;   }
         if ($Orde->save()) {
             return $this->success('恭喜您修改成功！','../../admin/index/orderinfo');
         } else {
@@ -513,20 +582,19 @@ class Index extends Controller
     {   
 		if(!Session::has('uname')){ $this->error('请您重新登录！','/index'); }
 
-        $OrderNum=$_POST["OrderNum"];
-	    $OrderTime=$_POST["OrderTime"];
+        $ExpressNum=$_POST["ExpressNum"];
+	    $NumData=$_POST["NumData"];
+		$DataTime=$_POST["DataTime"];
+		$Type=$_POST["Type"];
+		$Remarks=$_POST["Remarks"];
 		$id=$_POST["id"];
-		$result = Db::name('orderlist')
-            ->where([
-           'OrderNum'   => $OrderNum
-            ])
-            ->find();
-		if($result){ return $this->error('输入的订单号已存在，请重新输入！'); }
-
 	    $Orde           = OrderModel::get($id);
-        $Orde->OrderNum = $OrderNum;
+        $Orde->ExpressNum = $ExpressNum;
 		$Orde->UserName = Session::get('uname');;
-        $Orde->OrderTime    = $OrderTime;
+        $Orde->NumData    = $NumData;
+		$Orde->DataTime    = $DataTime;
+		$Orde->Type    = $Type;
+		$Orde->Remarks    = $Remarks;
         if ($Orde->save()) {
             return $this->success('恭喜您修改成功！','../../admin/index/hy_list');
         } else {
@@ -551,9 +619,12 @@ class Index extends Controller
         $result =  Db::name('orderdata')
                ->where('id', $id)
                ->delete();
-		$result =  Db::name('orderlist')
+        $result1 = Db::name('orderlist')->where('OrderId', $id) ->find();
+		if($result1){
+		  $result =  Db::name('orderlist')
                ->where('OrderId', $id)
                ->delete();
+		}
 		if ($result) {
             return $this->success('删除成功！');
         } else {
@@ -589,7 +660,23 @@ class Index extends Controller
         }
 		echo json_encode($arr);
     }
-
+    public function UploadImg()
+    {   
+		header('Content-Type:application/json; charset=utf-8');
+		if(!Session::has('uname')){ $this->error('请您重新登录！','/index'); }
+		foreach($_FILES as $k=>$v){
+          $name=strstr($v["name"],".");
+          $fileName = time().rand(1,9).rand(1,9).rand(1,9).rand(1,9).rand(1,9).$name;
+          move_uploaded_file($v["tmp_name"],"uploads/image/" .$fileName);
+          $imgarr[]="uploads/image/" .$fileName;
+        }
+       if(isset($imgarr)){
+       $jsjson_imgarr = json_encode($imgarr);
+        echo '{"code": "1", "message": "上传成功！", "data": '.$jsjson_imgarr.'}';
+         }else{
+         echo '{"code": "2", "message": "上传失败！", "data": ""}';
+        }
+    }
 
 }
 

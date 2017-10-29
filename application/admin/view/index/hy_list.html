@@ -82,19 +82,25 @@ function editorder(id){
             <!--查询-->
             <div class="search">
 			<form action="../../admin/index/orderinfo" id="formtj" method="get">
-            	<span>订单号查询：</span>
-				  <input name="OrderNum" id="OrderNum" class="input_list" type="text" value="" >
-			    <span style="margin-left:20px;">
+            	<span style="margin-left:10px;">订单号查询：</span>
+				  <input name="OrderNum" id="OrderNum" style="width: 100px;" class="input_list" type="text" value="" >
+			    <span style="margin-left:10px;">
 				  客户查询：
                     <input name="ClientName" id="ClientName" type="text" class="input_list" style="width: 120px;" value="" >
 				</span>
-				 <span style="margin-left:20px;">
+				 <span style="margin-left:10px;">
 				  时间查询：
 				    <input name="search" id="starttime" readonly class="input_list" style="width: 125px;" type="text" value="" >
-				  --
+				  -
 				    <input name="search" id="stoptime" readonly class="input_list" style="width: 125px;" type="text" value="" >
 				</span>
-				 <a href="javascript:;" style=" margin-left:20px; " onclick="SE.OrderStatistics();" class="btn">查询</a>
+				<span style="margin-left:10px;">
+				  未交货查询：
+				    <input name="search" id="startnot" class="input_list" style="width: 70px;" type="text" value="" >
+				  -
+				    <input name="search" id="stopnot" class="input_list" style="width: 70px;" type="text" value="" >
+				</span>
+				 <a href="javascript:;" style=" margin-left:10px; " onclick="SE.OrderStatistics();" class="btn">查询</a>
 				 <a href="javascript:;" style=" float:right; margin-right:10px; margin-top:3px; " onclick="location.href ='../../admin/index/hy_list'" class="btn">刷新</a>
 			</form>
             </div>
@@ -109,7 +115,7 @@ function editorder(id){
 				 <td>客户</td>
 				 <td>订单时间</td>
 				 <td style="width: 50px;">单价</td>
-				 <td style="width: 80px;">总金额</td>
+				 <td style="width: 80px;">规格名称</td>
 				 <td>订单数量</td>
 				 <td>发货数量</td>
 				 <td>退货数量</td>
